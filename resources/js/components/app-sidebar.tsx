@@ -2,11 +2,23 @@
 
 import * as React from "react"
 import {
+  BookOpen,
+  Bot,
   Command,
-  Frame, Home,
+  Frame,
   LifeBuoy,
+  Map,
+  PieChart,
   Send,
+  Settings2,
   SquareTerminal,
+  LayoutDashboard,
+  ClipboardList,
+  FileText,
+  Mail,
+  List,
+  UserCog,
+  Book,
 } from "lucide-react"
 
 import { NavMain } from "@/components/nav-main"
@@ -32,40 +44,68 @@ const data = {
   },
   navMain: [
     {
-      title: "Dashboard",
-      url: "/dashboard",
-      icon: Home,
-    },
-    {
-      title: "Projects",
+      title: "Main",
       url: "#",
-      icon: SquareTerminal,
-      isActive: true,
+      icon: LayoutDashboard,
       items: [
         {
-          title: "History",
-          url: "#",
+          title: "Dashboard",
+           url: "#",
+        },
+        {
+          title: "Violation Registry",
+           url: "#",
         },
       ],
     },
     {
-      title: "Design Engineering",
+      title: "Reports",
       url: "#",
-      icon: Frame,
+      icon: FileText,
+      items: [
+        {
+          title: "Violation Report",
+           url: "#",
+        },
+        {
+          title: "Order of Payment",
+           url: "#",
+        },
+      ],
+    },
+    {
+      title: "Maintenance",
+      url: "#",
+      icon: Settings2,
+      items: [
+        {
+          title: "List of Violation",
+           url: "#",
+        },
+        {
+          title: "Apprehending Officers",
+           url: "#",
+        },
+        {
+          title: "Booklet Inventory",
+           url: "#",
+        },
+      ],
+    },
+   
+  ],
+  navSecondary: [
+    {
+      title: "Support",
+      url: "#",
+      icon: LifeBuoy,
+    },
+    {
+      title: "Feedback",
+      url: "#",
+      icon: Send,
     },
   ],
-  // navSecondary: [
-  //   {
-  //     title: "Support",
-  //     url: "#",
-  //     icon: LifeBuoy,
-  //   },
-  //   {
-  //     title: "Feedback",
-  //     url: "#",
-  //     icon: Send,
-  //   },
-  // ],
 }
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
@@ -97,7 +137,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       </SidebarHeader>
       <SidebarContent>
         <NavMain items={data.navMain} />
-        {/* <NavSecondary items={data.navSecondary} className="mt-auto" /> */}
+        <NavSecondary items={data.navSecondary} className="mt-auto" />
       </SidebarContent>
       <SidebarFooter>
         <NavUser user={auth.user} />

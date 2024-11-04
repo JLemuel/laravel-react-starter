@@ -8,6 +8,7 @@ import {
     BreadcrumbList, BreadcrumbPage,
 } from "@/components/ui/breadcrumb";
 import AppearanceDropdown from "@/components/appearance-dropdown";
+import { Toaster } from "@/components/ui/toaster";
 
 export default function AuthenticatedLayout({
     header,
@@ -41,6 +42,7 @@ export default function AuthenticatedLayout({
                     {children}
                 </main>
             </SidebarInset>
+            <Toaster />
         </SidebarProvider>
     );
 }
