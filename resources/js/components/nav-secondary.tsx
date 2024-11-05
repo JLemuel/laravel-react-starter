@@ -1,5 +1,7 @@
 import * as React from "react"
 import { type LucideIcon } from "lucide-react"
+import { Link, usePage } from "@inertiajs/react"
+import { cn } from "@/lib/utils"
 
 import {
   SidebarGroup,
@@ -19,6 +21,8 @@ export function NavSecondary({
     icon: LucideIcon
   }[]
 } & React.ComponentPropsWithoutRef<typeof SidebarGroup>) {
+  const { url: currentUrl } = usePage()
+
   return (
     <SidebarGroup {...props}>
       <SidebarGroupContent>
@@ -26,10 +30,15 @@ export function NavSecondary({
           {items.map((item) => (
             <SidebarMenuItem key={item.title}>
               <SidebarMenuButton asChild size="sm">
-                <a href={item.url}>
+                <Link 
+                  href={item.url}
+                  className={cn(
+                    currentUrl === item.url && "bg-primary text-white"
+                  )}
+                >
                   <item.icon />
                   <span>{item.title}</span>
-                </a>
+                </Link>
               </SidebarMenuButton>
             </SidebarMenuItem>
           ))}

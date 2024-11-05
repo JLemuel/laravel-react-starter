@@ -4,26 +4,23 @@ import * as React from "react"
 import {
   BookOpen,
   Bot,
-  Command,
+  FileStack,
   Frame,
   LifeBuoy,
   Map,
   PieChart,
   Send,
+  PersonStanding,
   Settings2,
   SquareTerminal,
-  LayoutDashboard,
-  ClipboardList,
-  FileText,
-  Mail,
-  List,
-  UserCog,
-  Book,
+  BookOpenText
 } from "lucide-react"
 
 import { NavMain } from "@/components/nav-main"
+import { NavReports } from "@/components/nav-report"
 import { NavSecondary } from "@/components/nav-secondary"
 import { NavUser } from "@/components/nav-user"
+import { NavMaintenance } from "@/components/nav-maintenance"
 import {
   Sidebar,
   SidebarContent,
@@ -33,9 +30,10 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
-import { Link, usePage } from "@inertiajs/react";
-import { PageProps } from "@/types";
 import Logo from '../../images/logo.png'
+import { Link, usePage } from "@inertiajs/react";
+import { PageProps } from "@/types"
+
 const data = {
   user: {
     name: "shadcn",
@@ -44,80 +42,68 @@ const data = {
   },
   navMain: [
     {
-      title: "Main",
-      url: "#",
-      icon: LayoutDashboard,
-      items: [
-        {
-          title: "Dashboard",
-           url: "#",
-        },
-        {
-          title: "Violation Registry",
-           url: "#",
-        },
-      ],
+      title: "Dashboard",
+      url: "/dashboard",
+      icon: PieChart,
     },
     {
-      title: "Reports",
+      title: "Violation Registry",
       url: "#",
-      icon: FileText,
-      items: [
-        {
-          title: "Violation Report",
-           url: "#",
-        },
-        {
-          title: "Order of Payment",
-           url: "#",
-        },
-      ],
+      icon: FileStack,
     },
-    {
-      title: "Maintenance",
-      url: "#",
-      icon: Settings2,
-      items: [
-        {
-          title: "List of Violation",
-           url: "#",
-        },
-        {
-          title: "Apprehending Officers",
-           url: "#",
-        },
-        {
-          title: "Booklet Inventory",
-           url: "#",
-        },
-      ],
-    },
-   
   ],
   navSecondary: [
     {
-      title: "Support",
+      title: "Users",
       url: "#",
       icon: LifeBuoy,
     },
     {
-      title: "Feedback",
+      title: "Roles",
+      url: "/roles",
+      icon: Send,
+    },
+  ],
+  reports: [
+    {
+      name: "Violation Report",
+      url: "#",
+      icon: BookOpen,
+    },
+    {
+      name: "Order of Payment",
       url: "#",
       icon: Send,
+    },
+  ],
+  maintenance: [
+    {
+      name: "List of Violation",
+      url: "#",
+      icon: Settings2,
+    },
+    {
+      name: "Apprehending Officers",
+      url: "#",
+      icon: PersonStanding,
+    },
+    {
+      name: "Booklet Inventory",
+      url: "#",
+      icon: BookOpenText,
     },
   ],
 }
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const { auth } = usePage<PageProps>().props;
-
   return (
     <Sidebar variant="inset" {...props}>
       <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton size="lg" asChild>
-              <Link href={route('dashboard')}>
+            <Link href={route('dashboard')}>
                 {/* <div className="flex items-center justify-center rounded-lg aspect-square size-8 bg-sidebar-primary text-sidebar-primary-foreground">
                   <Command className="size-4" />
                 </div> */}
@@ -137,10 +123,12 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       </SidebarHeader>
       <SidebarContent>
         <NavMain items={data.navMain} />
+        <NavReports reports={data.reports} />
+        <NavMaintenance maintenance={data.maintenance} />
         <NavSecondary items={data.navSecondary} className="mt-auto" />
       </SidebarContent>
       <SidebarFooter>
-        <NavUser user={auth.user} />
+      <NavUser user={auth.user} />
       </SidebarFooter>
     </Sidebar>
   )

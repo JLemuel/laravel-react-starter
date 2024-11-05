@@ -18,7 +18,8 @@ import {
   SidebarMenuSubButton,
   SidebarMenuSubItem,
 } from "@/components/ui/sidebar"
-import {Link} from "@inertiajs/react";
+import { Link, usePage } from "@inertiajs/react"
+import { cn } from "@/lib/utils"
 
 export function NavMain({
   items,
@@ -34,18 +35,25 @@ export function NavMain({
     }[]
   }[]
 }) {
+  const { url: currentUrl } = usePage()
+
   return (
     <SidebarGroup>
-      <SidebarGroupLabel>Navigation</SidebarGroupLabel>
+      <SidebarGroupLabel>Platform</SidebarGroupLabel>
       <SidebarMenu>
         {items.map((item) => (
           <Collapsible key={item.title} asChild defaultOpen={item.isActive}>
             <SidebarMenuItem>
               <SidebarMenuButton asChild tooltip={item.title}>
-                <a href={item.url}>
+              <Link 
+                  href={item.url}
+                  className={cn(
+                    currentUrl === item.url && "bg-primary text-white"
+                  )}
+                >
                   <item.icon />
                   <span>{item.title}</span>
-                </a>
+                </Link>
               </SidebarMenuButton>
               {item.items?.length ? (
                 <>
@@ -60,9 +68,9 @@ export function NavMain({
                       {item.items?.map((subItem) => (
                         <SidebarMenuSubItem key={subItem.title}>
                           <SidebarMenuSubButton asChild>
-                            <Link href={subItem.url}>
+                            <a href={subItem.url}>
                               <span>{subItem.title}</span>
-                            </Link>
+                            </a>
                           </SidebarMenuSubButton>
                         </SidebarMenuSubItem>
                       ))}
