@@ -25,18 +25,16 @@ export default function VerifyEmail({ status }: { status?: string }) {
             <Card>
                 <CardHeader>
                     <CardDescription>
-                        Thanks for signing up! Before getting started, could you
-                        verify your email address by clicking on the link we
-                        just emailed to you? If you didn't receive the email, we
-                        will gladly send you another.
+                        To access your account, please verify your email address by clicking 
+                        on the link we just emailed to you. If you didn't receive the email, 
+                        you can request another verification link below.
                     </CardDescription>
                 </CardHeader>
 
                 <CardContent>
                     {status === "verification-link-sent" && (
                         <div className="mb-4 font-medium text-sm text-green-600">
-                            A new verification link has been sent to the email
-                            address you provided during registration.
+                            A new verification link has been sent to your email address.
                         </div>
                     )}
 

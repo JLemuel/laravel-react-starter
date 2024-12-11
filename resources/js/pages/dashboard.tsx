@@ -137,7 +137,7 @@ export default function Dashboard() {
                                 plugins={[plugin]}
                                 className="w-full"
                             >
-                                              <CarouselContent className="mt-2 -ml-2 md:-ml-4">
+                                <CarouselContent className="mt-2 -ml-2 md:-ml-4">
                                     {announcements.map((announcement) => (
                                         <CarouselItem key={announcement.id}>
                                             <div className="relative overflow-hidden rounded-lg bg-white dark:bg-gray-800/50 backdrop-blur-sm p-4 transition-all hover:shadow-md border border-purple-100 dark:border-purple-900/20">
@@ -146,8 +146,8 @@ export default function Dashboard() {
                                                         {announcement.title}
                                                     </h3>
                                                     <span className={`px-2 py-1 text-xs rounded-full ${announcement.priority === 'high'
-                                                            ? 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300'
-                                                            : 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-300'
+                                                        ? 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300'
+                                                        : 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-300'
                                                         }`}>
                                                         {announcement.priority.charAt(0).toUpperCase() + announcement.priority.slice(1)} Priority
                                                     </span>

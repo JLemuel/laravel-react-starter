@@ -55,7 +55,7 @@ const data = {
   navSecondary: [
     {
       title: "Users",
-      url: "#",
+      url: "/users",
       icon: LifeBuoy,
     },
     {
@@ -79,12 +79,12 @@ const data = {
   maintenance: [
     {
       name: "List of Violation",
-      url: "#",
+      url: "/violations",
       icon: Settings2,
     },
     {
       name: "Apprehending Officers",
-      url: "#",
+      url: "/apprehending-officers",
       icon: PersonStanding,
     },
     {

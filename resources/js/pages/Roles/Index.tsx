@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 // import { Inertia } from '@inertiajs/react';
-import { Link, router, useForm } from '@inertiajs/react';
+import { Link, router } from '@inertiajs/react';
 import AuthenticatedLayout from '@/layouts/authenticated-layout';
 import { Button } from "@/components/ui/button";
 import {
@@ -33,7 +33,8 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { Toaster } from "@/components/ui/toaster";
-import { useToast } from "@/hooks/use-toast";
+import { useFormWithToast } from '@/hooks/useFormWithToast';
+import DeleteConfirmationDialog from '@/components/Dialog/DeleteConfirmationDialog';
 
 interface RolePermissions {
   administrator: boolean;
@@ -78,49 +79,31 @@ export default function Index({ roles, flash = { success: null, error: null } }:
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editingRole, setEditingRole] = useState<Role | null>(null);
   const [showDeleteAlert, setShowDeleteAlert] = useState(false);
-  const { data, setData, post, put, processing, errors, reset } = useForm({
-    name: '',
-    permissions: {
-      administrator: false,
-      dashboard: { view: false, manage: false },
-      violationRegistry: { view: false, create: false, edit: false, delete: false },
-      reports: { view: false, generate: false, create: false },
-      maintenance: { view: false, edit: false, manage: false }
+  
+  const form = useFormWithToast({
+    initialData: {
+      name: '',
+      permissions: {
+        administrator: false,
+        dashboard: { view: false, manage: false },
+        violationRegistry: { view: false, create: false, edit: false, delete: false },
+        reports: { view: false, generate: false, create: false },
+        maintenance: { view: false, edit: false, manage: false }
+      }
+    },
+    onSuccess: () => {
+      handleCloseDialog();
+    },
+    onError: () => {
+      // Error handling is managed by the hook
     }
   });
-  const { toast } = useToast();
 
-  useEffect(() => {
-    if (flash?.success) {
-      toast({
-        title: "Success",
-        description: flash.success,
-        variant: "default",
-      });
-    }
-    if (flash?.error) {
-      toast({
-        title: "Error",
-        description: flash.error,
-        variant: "destructive",
-      });
-    }
-  }, [flash?.success, flash?.error]);
+  const { data, setData, processing, errors, reset } = form;
 
-  const deleteRole = (id: number) => {
-    router.delete(route('roles.destroy', id), {
-      onSuccess: () => {
-        setShowDeleteAlert(false);
-        setEditingRole(null);
-      },
-      onError: (errors) => {
-        toast({
-          title: "Error",
-          description: "An error occurred while deleting the role",
-          variant: "destructive",
-        });
-      },
-    });
+  const deleteRole = () => {
+    setShowDeleteAlert(false);
+    setEditingRole(null);
   };
 
   const handleOpenDialog = (role?: Role) => {
@@ -147,39 +130,9 @@ export default function Index({ roles, flash = { success: null, error: null } }:
     e.preventDefault();
     
     if (editingRole) {
-      put(route('roles.update', editingRole.id), {
-        onSuccess: () => {
-          handleCloseDialog();
-          toast({
-            title: "Success",
-            description: "Role updated successfully",
-          });
-        },
-        onError: (errors) => {
-          toast({
-            title: "Error",
-            description: "Failed to update role. Please check the form for errors.",
-            variant: "destructive",
-          });
-        },
-      });
+      form.submit(route('roles.update', editingRole.id), { method: 'put' });
     } else {
-      post(route('roles.store'), {
-        onSuccess: () => {
-          handleCloseDialog();
-          toast({
-            title: "Success",
-            description: "Role created successfully",
-          });
-        },
-        onError: (errors) => {
-          toast({
-            title: "Error",
-            description: "Failed to create role. Please check the form for errors.",
-            variant: "destructive",
-          });
-        },
-      });
+      form.submit(route('roles.store'));
     }
   };
 
@@ -265,7 +218,7 @@ export default function Index({ roles, flash = { success: null, error: null } }:
   };
 
   return (
-    <AuthenticatedLayout>
+    <AuthenticatedLayout header="Roles">
       <div className="container mx-auto py-8">
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-2xl font-bold">Roles</h1>
@@ -425,7 +378,11 @@ export default function Index({ roles, flash = { success: null, error: null } }:
                                       <div className="flex items-center h-5 mt-0.5">
                                         <Checkbox
                                           id={`${key}-${permission}`}
-                                          checked={data.permissions[key as keyof RolePermissions]?.[permission]}
+                                          checked={
+                                            typeof data.permissions[key as keyof RolePermissions] === 'object' 
+                                              ? (data.permissions[key as keyof RolePermissions] as any)[permission] 
+                                              : false
+                                          }
                                           disabled={data.permissions.administrator}
                                           onCheckedChange={(checked) => {
                                             const section = data.permissions[key as keyof RolePermissions];
@@ -590,32 +547,19 @@ export default function Index({ roles, flash = { success: null, error: null } }:
         </div>
       </div>
 
-      <AlertDialog open={showDeleteAlert} onOpenChange={setShowDeleteAlert}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-            <AlertDialogDescription>
-              This action cannot be undone. This will permanently delete the role
-              "{editingRole?.name}" and remove it from the system.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel onClick={() => setEditingRole(null)}>Cancel</AlertDialogCancel>
-            <AlertDialogAction
-              onClick={() => {
-                if (editingRole) {
-                  deleteRole(editingRole.id);
-                  setEditingRole(null);
-                }
-                setShowDeleteAlert(false);
-              }}
-              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
-            >
-              Delete
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+      <DeleteConfirmationDialog
+        isOpen={showDeleteAlert}
+        onClose={() => {
+          setShowDeleteAlert(false);
+          setEditingRole(null);
+        }}
+        form={form}
+        title="Delete Role"
+        description={`Are you sure you want to delete the role "${editingRole?.name}"?`}
+        warningMessage="This action cannot be undone. This will permanently delete the role and remove all associated permissions."
+        itemId={editingRole?.id || 0}
+        routeName="roles.destroy"
+      />
  
     </AuthenticatedLayout>
   );

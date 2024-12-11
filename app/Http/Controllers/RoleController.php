@@ -23,8 +23,7 @@ class RoleController extends Controller
         return Inertia::render('Roles/Index', [
             'roles' => $roles,
             'flash' => [
-                'success' => session('success'),
-                'error' => session('error')
+                'message' => session('message')
             ],
         ]);
     }
@@ -100,11 +99,13 @@ class RoleController extends Controller
 
         $role = Role::create(['name' => $request->name]);
         
-        // Sync permissions
         $permissions = $this->mapPermissionsToDatabase($request->permissions);
         $role->syncPermissions($permissions);
 
-        return redirect()->route('roles.index')->with('success', 'Role created successfully.');
+        return redirect()->route('roles.index')->with('message', [
+            'type' => 'success',
+            'text' => 'Role created successfully.'
+        ]);
     }
 
     public function edit(Role $role)
@@ -125,26 +126,32 @@ class RoleController extends Controller
             'permissions' => 'required|array'
         ]);
 
-        // Update role name
         $role->name = $request->name;
         $role->save();
 
-        // Sync permissions
         $permissions = $this->mapPermissionsToDatabase($request->permissions);
         $role->syncPermissions($permissions);
 
-        return redirect()->route('roles.index')->with('success', 'Role updated successfully.');
+        return redirect()->route('roles.index')->with('message', [
+            'type' => 'success',
+            'text' => 'Role updated successfully.'
+        ]);
     }
 
     public function destroy(Role $role)
     {
-        // Prevent deletion if users are assigned to this role
         if ($role->users()->count() > 0) {
-            return back()->with('error', 'Cannot delete role with assigned users.');
+            return back()->with('message', [
+                'type' => 'error',
+                'text' => 'Cannot delete role with assigned users.'
+            ]);
         }
 
         $role->delete();
-        return redirect()->route('roles.index')->with('success', 'Role deleted successfully.');
+        return redirect()->route('roles.index')->with('message', [
+            'type' => 'success',
+            'text' => 'Role deleted successfully.'
+        ]);
     }
 
     private function mapPermissionsToDatabase($permissions)

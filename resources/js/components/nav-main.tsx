@@ -45,39 +45,17 @@ export function NavMain({
           <Collapsible key={item.title} asChild defaultOpen={item.isActive}>
             <SidebarMenuItem>
               <SidebarMenuButton asChild tooltip={item.title}>
-              <Link 
+                <Link 
                   href={item.url}
                   className={cn(
-                    currentUrl === item.url && "bg-primary text-white"
+                    "flex items-center gap-2 w-full",
+                    currentUrl === item.url && "bg-primary text-primary-foreground"
                   )}
                 >
-                  <item.icon />
+                  <item.icon className="h-4 w-4" />
                   <span>{item.title}</span>
                 </Link>
               </SidebarMenuButton>
-              {item.items?.length ? (
-                <>
-                  <CollapsibleTrigger asChild>
-                    <SidebarMenuAction className="data-[state=open]:rotate-90">
-                      <ChevronRight />
-                      <span className="sr-only">Toggle</span>
-                    </SidebarMenuAction>
-                  </CollapsibleTrigger>
-                  <CollapsibleContent>
-                    <SidebarMenuSub>
-                      {item.items?.map((subItem) => (
-                        <SidebarMenuSubItem key={subItem.title}>
-                          <SidebarMenuSubButton asChild>
-                            <a href={subItem.url}>
-                              <span>{subItem.title}</span>
-                            </a>
-                          </SidebarMenuSubButton>
-                        </SidebarMenuSubItem>
-                      ))}
-                    </SidebarMenuSub>
-                  </CollapsibleContent>
-                </>
-              ) : null}
             </SidebarMenuItem>
           </Collapsible>
         ))}
